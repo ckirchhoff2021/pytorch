@@ -8,7 +8,7 @@ dsa_tests = [
     "impl/CUDAAssertionsTest_multiple_writes_from_same_block.cu",
 ]
 
-IS_OSS = read_config("pt", "is_oss", "0") == "1"
+IS_OSS = native.read_config("pt", "is_oss", "0") == "1"
 extra_cuda_lib_args = {"compiler_flags": ["-Wno-pedantic"]} if not IS_OSS else {}
 
 def define_targets(rules):
