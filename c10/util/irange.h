@@ -19,7 +19,11 @@ template <
     typename std::enable_if<std::is_integral<I>::value, int>::type = 0>
 struct integer_iterator {
   explicit integer_iterator(I value) : value(value) {}
-
+  using iterator_category = std::input_iterator_tag;
+  using value_type = I;
+  using difference_type = I;
+  using pointer = I*;
+  using reference = I&;
   I operator*() const {
     return value;
   }
@@ -54,12 +58,6 @@ struct integer_iterator {
   bool operator!=(const integer_iterator& other) const {
     return !(*this == other);
   }
- public:
-  using iterator_category = std::input_iterator_tag;
-  using value_type = I;
-  using difference_type = I;
-  using pointer = I*;
-  using reference = I&;
  protected:
   I value;
 };
