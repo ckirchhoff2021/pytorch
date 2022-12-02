@@ -17,7 +17,7 @@ template <
     typename I,
     bool one_sided = false,
     typename std::enable_if<std::is_integral<I>::value, int>::type = 0>
-struct integer_iterator : std::iterator<std::input_iterator_tag, I> {
+struct integer_iterator : std::iterator_traits<std::input_iterator_tag, I> {
   explicit integer_iterator(I value) : value(value) {}
 
   I operator*() const {
