@@ -36,6 +36,55 @@ struct LinearPackedParamsBase : public torch::jit::CustomClassHolder {
     return output;
   }
 
+  // Corresponding pattern (the ops with `*` are part of the pattern that
+  // represents the computation of quantized::linear_with_input_q_dq_qweight_dq):
+  // input -> q* -> dq* -> linear* ->
+  //         qweight -> dq* /
+  //
+  // After fusion:
+  // input -> quantized::linear_with_input_q_dq_qweight_dq* ->
+  //         qweight /
+  //
+  // Additional Note: the weight is packed as well
+  // Params:
+  //    X: float32 Tensor, will be quantized to quint8 in the op
+  //    W_prepack: packed qint8 quantized weight and bias
+  // Returns:
+  //    Y: float32 Tensor
+  virtual at::Tensor apply_with_input_q_dq_qweight_dq(
+      at::Tensor input,
+      double input_scale,
+      int64_t input_zero_point) {
+    throw std::runtime_error(
+        "apply_with_input_q_dq_qweight_dq is not implemented for this packed "
+        "parameter type");
+    return {};
+  }
+
+  // Corresponding pattern (the ops with `*` are part of the pattern that
+  // represents the computation of quantized::linear_with_input_q_dq_qweight_dq_relu):
+  // input -> q* -> dq* -> linear* -> relu* ->
+  //         qweight -> dq* /
+  //
+  // After fusion:
+  // input -> quantized::linear_with_input_q_dq_qweight_dq_relu* ->
+  //         qweight /
+  //
+  // Additional Note: the weight is packed as well
+  // Params:
+  //    input: float32 Tensor, will be quantized to quint8 in the op
+  // Returns:
+  //    float32 Tensor
+  virtual at::Tensor apply_with_input_q_dq_qweight_dq_relu(
+      at::Tensor input,
+      double input_scale,
+      int64_t input_zero_point) {
+    throw std::runtime_error(
+        "apply_with_input_q_dq_qweight_dq_relu is not implemented for this packed "
+        "parameter type");
+    return {};
+  }
+
   virtual at::Tensor apply_dynamic(
       at::Tensor input,
       bool reduce_range = false) = 0;
